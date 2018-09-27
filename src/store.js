@@ -1,21 +1,23 @@
-import { browserHistory } from 'react-router'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { createStore, applyMiddleware, compose } from 'redux'
-import thunkMiddleware from 'redux-thunk'
-import { routerMiddleware } from 'react-router-redux'
+import { createBrowserHistory } from 'history'
+
 import reducer from './reducer'
+
+export const history = createBrowserHistory()
 
 // Redux DevTools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const routingMiddleware = routerMiddleware(browserHistory)
+const initialState = {
+  user: { data: null }
+}
 
 const store = createStore(
-  reducer,
+  connectRouter(history)(reducer),
+  initialState,
   composeEnhancers(
-    applyMiddleware(
-      thunkMiddleware,
-      routingMiddleware
-    )
+    applyMiddleware(routerMiddleware(history))
   )
 )
 

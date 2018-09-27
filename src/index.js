@@ -1,30 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Route } from 'react-router'
 import { Provider } from 'react-redux'
-import { syncHistoryWithStore } from 'react-router-redux'
-import { UserIsAuthenticated } from './util/wrappers.js'
+import { ConnectedRouter } from 'connected-react-router'
 
 // Layouts
 import App from './App'
-import Home from './layouts/home/Home'
-import Dashboard from './layouts/dashboard/Dashboard'
-import Profile from './user/layouts/profile/Profile'
 
 // Redux Store
-import store from './store'
-
-const history = syncHistoryWithStore(browserHistory, store)
+import store, { history } from './store'
 
 ReactDOM.render((
     <Provider store={store}>
-      <Router history={history}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Home} />
-          <Route path="dashboard" component={UserIsAuthenticated(Dashboard)} />
-          <Route path="profile" component={UserIsAuthenticated(Profile)} />
-        </Route>
-      </Router>
+      <ConnectedRouter history={history}>
+        <Route path="/" component={App} />
+      </ConnectedRouter>
     </Provider>
   ),
   document.getElementById('root')

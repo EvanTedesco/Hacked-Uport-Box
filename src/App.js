@@ -1,51 +1,40 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router'
-import { HiddenOnlyAuth, VisibleOnlyAuth } from './util/wrappers.js'
+import React from 'react'
+import { connect } from 'react-redux'
+import { Switch, Route } from 'react-router'
 
-// UI Components
-import LoginButtonContainer from './user/ui/loginbutton/LoginButtonContainer'
-import LogoutButtonContainer from './user/ui/logoutbutton/LogoutButtonContainer'
+import { Home, Dashboard, UserIsAuthenticated, NavBar } from './components'
+import { uport, handleDisclosure } from './uport'
 
 // Styles
-import './css/oswald.css'
-import './css/open-sans.css'
-import './css/pure-min.css'
 import './App.css'
+import './assets/css/open-sans.css'
 
-class App extends Component {
-  render() {
-    const OnlyAuthLinks = VisibleOnlyAuth(() =>
-      <span>
-        <li className="pure-menu-item">
-          <Link to="/dashboard" className="pure-menu-link">Dashboard</Link>
-        </li>
-        <li className="pure-menu-item">
-          <Link to="/profile" className="pure-menu-link">Profile</Link>
-        </li>
-        <LogoutButtonContainer />
-      </span>
-    )
+// Protect dashboard page with login
+const AuthOnlyDashboard = UserIsAuthenticated(Dashboard)
 
-    const OnlyGuestLinks = HiddenOnlyAuth(() =>
-      <span>
-        <LoginButtonContainer />
-      </span>
-    )
-
-    return (
-      <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-          <Link to="/" className="pure-menu-heading pure-menu-link">Truffle Box</Link>
-          <ul className="pure-menu-list navbar-right">
-            <OnlyGuestLinks />
-            <OnlyAuthLinks />
-          </ul>
-        </nav>
-
-        {this.props.children}
-      </div>
-    );
-  }
+const App = ({restoreUserData, loggedIn}) => {
+  // Auto-login if credentials are cached in localStorage
+  if (!loggedIn && uport.did) restoreUserData(uport.state)
+  return (
+    <div>
+      <NavBar />
+      <main>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/dashboard" component={AuthOnlyDashboard} />
+        </Switch>
+      </main>
+    </div>
+  )
 }
 
-export default App
+export default connect(
+  // mapStateToProps
+  (state) => ({
+    loggedIn: !!state.user.data
+  }),
+  // mapDispatchToProps
+  (dispatch) => ({
+    restoreUserData: handleDisclosure(dispatch)
+  })
+)(App)
