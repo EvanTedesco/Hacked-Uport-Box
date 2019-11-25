@@ -1,10 +1,12 @@
 import React from 'react'
+import HobbyCard from '../util/HobbyCard'
 import { connect } from 'react-redux'
 
-const Dashboard = ({authData}) => {
+
+const Dashboard = ({ authData }) => {
   console.log('DASHBOARD RENDERING', authData);
   const { name, verified } = authData || {}
-  
+
   return (
     <div>
       <div>
@@ -15,12 +17,13 @@ const Dashboard = ({authData}) => {
         {verified && verified.map((attestation) =>
           <AttestationCard {...attestation} />
         )}
+        <HobbyCard />
       </div>
     </div>
   )
 }
 
-const AttestationCard = ({claim, iss, sub}) => (
+const AttestationCard = ({ claim, iss, sub }) => (
   <div className="card">
     <h4>subject: <code>{sub}</code></h4>
     <h4>issuer: <code>{iss}</code></h4>
@@ -28,17 +31,17 @@ const AttestationCard = ({claim, iss, sub}) => (
   </div>
 )
 
-const ExpandJSON = ({obj}) => {
+const ExpandJSON = ({ obj }) => {
   return (
     <ul className="key">
       {Object.keys(obj).map((key) => (
         <li><b>{key}: </b>
           {
-            (Array.isArray(obj[key])) 
+            (Array.isArray(obj[key]))
               ? '[' + obj[key].map((item) => <ExpandJSON obj={item} />) + ']'
               : (typeof obj[key] === 'object')
-              ? <ExpandJSON obj={obj[key]} />
-              : obj[key]
+                ? <ExpandJSON obj={obj[key]} />
+                : obj[key]
           }
         </li>
       ))}

@@ -11,11 +11,11 @@ const DISCLOSURE_REQUEST = 'DISCLOSURE_REQUEST'
  * @param {String[]}  opts.requested  self-attested attributes to request from the user
  * @param {String[]}  opts.verified   verifiable claims to be requested from the user (i.e. signed by someone else)
  */
-export function requestDisclosure({requested = ['name'], verified}) {
+export function requestDisclosure({ requested = ['name', 'height', 'weight'], verified }) {
   // Initiate a disclosure request.  This sets up a transport channel using the 
   // DISCLOSURE_REQUEST id, where we will listen for the response
   uport.requestDisclosure({
-    requested, verified, 
+    requested, verified,
     notifications: true
   }, DISCLOSURE_REQUEST)
 }
@@ -27,15 +27,15 @@ export function requestDisclosure({requested = ['name'], verified}) {
  * @returns {Function}  dispatcher for the disclosure action
  */
 export function handleDisclosure(dispatch) {
-  return function(userData) {
+  return function (userData) {
     dispatch(userDisclosedData(userData))
-  
+
     // Use a manual redirect here as opposed to a wrapper.
     // This way, once logged in a user can still access the home page.
     if ('redirect' in history.location) {
       return history.push(decodeURIComponent(history.location.query.redirect))
     }
-  
+
     // This is the default page to redirect to on a dislcosure action
     return history.push('/dashboard')
   }
@@ -47,7 +47,7 @@ export function handleDisclosure(dispatch) {
  * is fired, even if the page is reloaded on a mobile device after returning from
  * the uPort mobile app.
  */
-uport.onResponse(DISCLOSURE_REQUEST).then(({res}) => handleDisclosure(store.dispatch)(res))
+uport.onResponse(DISCLOSURE_REQUEST).then(({ res }) => handleDisclosure(store.dispatch)(res))
 
 /**
  * Clear all user data from the browser, effectively 'logging out'
@@ -55,7 +55,7 @@ uport.onResponse(DISCLOSURE_REQUEST).then(({res}) => handleDisclosure(store.disp
  *                      uport logout and navigation back to home screen
  */
 export function clearUserData(dispatch) {
-  return function() {
+  return function () {
     uport.logout()
     dispatch(userDataCleared())
     history.push('/')
