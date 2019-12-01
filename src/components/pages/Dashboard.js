@@ -7,6 +7,7 @@ const Dashboard = ({ authData }) => {
   console.log('DASHBOARD RENDERING', authData);
   const { name, verified } = authData || {}
 
+
   return (
     <div>
       <div>
@@ -17,8 +18,8 @@ const Dashboard = ({ authData }) => {
         {verified && verified.map((attestation) =>
           <AttestationCard {...attestation} />
         )}
-        <HobbyCard />
       </div>
+      <HobbyCard />
     </div>
   )
 }
