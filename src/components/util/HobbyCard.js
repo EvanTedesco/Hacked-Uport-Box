@@ -21,7 +21,7 @@ class HobbyCard extends React.Component {
         return (<div>
             <div>
                 <label>First Name</label>
-                <input type="text" id="firstName" name="firstName" placeholder="Your name.." onChange={e => this.updateFirstName({ e })} />
+                <input type="text" id="firstName" name="firstName" placeholder="Your name.." onChange={e => this.updateFirstName(e)} />
 
                 <label>Last Name</label>
                 <input type="text" id="lastName" name="lastName" placeholder="Your last name.." onChange={e => this.updateLastName(e)} />

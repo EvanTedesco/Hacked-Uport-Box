@@ -11,7 +11,7 @@ const DISCLOSURE_REQUEST = 'DISCLOSURE_REQUEST'
  * @param {String[]}  opts.requested  self-attested attributes to request from the user
  * @param {String[]}  opts.verified   verifiable claims to be requested from the user (i.e. signed by someone else)
  */
-export function requestDisclosure({ requested = ['name', 'height', 'weight'], verified }) {
+export function requestDisclosure({ requested = [], verified }) {
   // Initiate a disclosure request.  This sets up a transport channel using the 
   // DISCLOSURE_REQUEST id, where we will listen for the response
   uport.requestDisclosure({
